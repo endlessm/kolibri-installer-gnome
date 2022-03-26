@@ -6,6 +6,7 @@ import typing
 from gettext import gettext as _
 from urllib.parse import urlsplit
 
+from gi.repository import Adw
 from gi.repository import Gio
 from gi.repository import GObject
 from gi.repository import Gtk
@@ -23,7 +24,7 @@ from .kolibri_window import KolibriWindow
 logger = logging.getLogger(__name__)
 
 
-class Application(Gtk.Application):
+class Application(Adw.Application):
     __context: KolibriContext
 
     application_name = GObject.Property(type=str, default=_("Kolibri"))
@@ -68,12 +69,12 @@ class Application(Gtk.Application):
         return self.__context
 
     def do_startup(self):
-        Gtk.Application.do_startup(self)
+        Adw.Application.do_startup(self)
 
         self.__context.init()
 
     def do_activate(self):
-        Gtk.Application.do_activate(self)
+        Adw.Application.do_activate(self)
 
         if not self.get_windows():
             self.open_kolibri_window()
@@ -83,7 +84,7 @@ class Application(Gtk.Application):
             self.__handle_open_file_url(file.get_uri())
 
     def do_shutdown(self):
-        Gtk.Application.do_shutdown(self)
+        Adw.Application.do_shutdown(self)
 
         self.__context.shutdown()
 
@@ -143,7 +144,8 @@ class Application(Gtk.Application):
         #        However, our WM_CLASS becomes `"main.py", "Main.py"`, which
         #        causes GNOME Shell to treat unique instances of this
         #        application (with different application IDs) as the same.
-        window.set_wmclass("Kolibri", self.get_application_id())
+        # FIXME: !!!
+        # window.set_wmclass("Kolibri", self.get_application_id())
 
         window.load_kolibri_url(target_url, present=True)
 
